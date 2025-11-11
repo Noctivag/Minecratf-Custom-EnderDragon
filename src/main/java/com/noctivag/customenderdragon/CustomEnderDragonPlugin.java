@@ -5,6 +5,8 @@ import com.noctivag.customenderdragon.commands.DragonCommand;
 import com.noctivag.customenderdragon.dragon.DragonManager;
 import com.noctivag.customenderdragon.listeners.DragonListener;
 import com.noctivag.customenderdragon.utils.ParticleManager;
+import com.noctivag.customenderdragon.visuals.CrystalStructureManager;
+import com.noctivag.customenderdragon.visuals.DisplayEntityManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -17,6 +19,8 @@ import org.bukkit.plugin.java.JavaPlugin;
  * - Epic Particle Effects
  * - Boss Bar with Phase Indicators
  * - Custom Loot System
+ * - 3D Display Entity Decorations (Serverside Only!)
+ * - Crystal Arena Structures
  * - Fully Configurable
  *
  * @author Noctivag
@@ -27,6 +31,8 @@ public class CustomEnderDragonPlugin extends JavaPlugin {
     private DragonManager dragonManager;
     private ParticleManager particleManager;
     private AbilityManager abilityManager;
+    private DisplayEntityManager displayEntityManager;
+    private CrystalStructureManager crystalStructureManager;
 
     @Override
     public void onEnable() {
@@ -37,6 +43,8 @@ public class CustomEnderDragonPlugin extends JavaPlugin {
         dragonManager = new DragonManager(this);
         particleManager = new ParticleManager(this);
         abilityManager = new AbilityManager(this);
+        displayEntityManager = new DisplayEntityManager(this);
+        crystalStructureManager = new CrystalStructureManager(this);
 
         // Register commands
         DragonCommand dragonCommand = new DragonCommand(this);
@@ -50,12 +58,16 @@ public class CustomEnderDragonPlugin extends JavaPlugin {
         getLogger().info("╔══════════════════════════════════════╗");
         getLogger().info("║   Custom EnderDragon Plugin v2.0    ║");
         getLogger().info("║          Next Level Edition          ║");
+        getLogger().info("║        WITH 3D VISUALS! 🎨          ║");
         getLogger().info("╠══════════════════════════════════════╣");
         getLogger().info("║  Features:                           ║");
         getLogger().info("║  • 5 Dragon Variants                 ║");
         getLogger().info("║  • 3-Phase Combat System             ║");
         getLogger().info("║  • Custom Abilities                  ║");
         getLogger().info("║  • Epic Particle Effects             ║");
+        getLogger().info("║  • 3D Display Entities (Serverside!) ║");
+        getLogger().info("║  • Crystal Arena Structures          ║");
+        getLogger().info("║  • Orbiting Orbs & Floating Runes    ║");
         getLogger().info("║  • Boss Bars & Custom Loot           ║");
         getLogger().info("╚══════════════════════════════════════╝");
         getLogger().info("");
@@ -65,6 +77,12 @@ public class CustomEnderDragonPlugin extends JavaPlugin {
         getLogger().info("  • LIGHTNING - Thunder & Chain Strikes");
         getLogger().info("  • SHADOW    - Teleportation & Darkness");
         getLogger().info("  • VOID      - Reality Warping & Wither");
+        getLogger().info("");
+        getLogger().info("NEW: Serverside 3D visuals enabled!");
+        getLogger().info("  ✓ Orbiting elemental orbs");
+        getLogger().info("  ✓ Floating crystal formations");
+        getLogger().info("  ✓ Rotating rune circles");
+        getLogger().info("  ✓ Crystal arena pillars");
         getLogger().info("");
         getLogger().info("Use /customdragon help for commands!");
     }
@@ -89,5 +107,13 @@ public class CustomEnderDragonPlugin extends JavaPlugin {
 
     public AbilityManager getAbilityManager() {
         return abilityManager;
+    }
+
+    public DisplayEntityManager getDisplayEntityManager() {
+        return displayEntityManager;
+    }
+
+    public CrystalStructureManager getCrystalStructureManager() {
+        return crystalStructureManager;
     }
 }

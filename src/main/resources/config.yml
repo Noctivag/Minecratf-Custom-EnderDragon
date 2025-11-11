@@ -23,6 +23,49 @@ phases:
   phase-2-threshold: 66   # 66% health
   phase-3-threshold: 33   # 33% health - ENRAGE
 
+# 3D Visual Effects (Serverside Only - No Client Mods Required!)
+visuals:
+  # Enable all 3D decorations
+  3d-decorations:
+    enabled: true
+    # Orbiting elemental orbs around dragon
+    orbiting-orbs: true
+    orb-count: 6
+    orbit-radius: 5.0
+    # Floating crystals
+    floating-crystals: true
+    crystal-count: 4
+    # Rune circles
+    rune-circles: true
+    rune-count: 8
+    # Aura sphere effect
+    aura-sphere: true
+
+  # Crystal Arena Structures
+  arena:
+    enabled: true
+    # Number of crystal pillars
+    pillar-count: 4
+    # Distance from dragon spawn point
+    radius: 15.0
+    # Energy beams between pillars
+    energy-beams: true
+
+  # Advanced 3D Particle Effects
+  particles-3d:
+    enabled: true
+    # Sphere formations
+    sphere-density: 10
+    # Helix/DNA strands
+    helix-enabled: true
+    helix-strands: 2
+    # Vortex effects
+    vortex-enabled: true
+    # Torus/donut shapes
+    torus-enabled: true
+    # Geometric patterns
+    geometric-enabled: true
+
 # Dragon Variants Configuration
 # Each variant has unique abilities, particles, and stats
 variants:

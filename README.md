@@ -34,6 +34,40 @@ Take your Minecraft dragon fights to the **next level** with this advanced Custo
 - **Wing Trails** - Dragons leave spectacular trails as they fly
 - **Ability Effects** - Stunning visual effects for every ability
 - **Phase Change Animations** - Explosive effects when entering new phases
+- **3D Particle Formations** - Spheres, helixes, vortexes, toruses, and more
+
+### 🌟 3D Visual Decorations (Serverside Only!)
+
+**No client mods or resource packs required!** Uses Display Entities (1.19.4+)
+
+#### Dragon Decorations
+- **Orbiting Elemental Orbs** - Glowing orbs that orbit around the dragon
+- **Floating Crystals** - Large crystals that hover and rotate near the dragon
+- **Rune Circles** - Mystical runes that rotate horizontally around the dragon
+- **Aura Sphere** - Translucent particle sphere surrounding the dragon
+
+#### Crystal Arena Structures
+- **Crystal Pillars** - Massive elemental pillars spawn in a circle around the dragon
+  - **Animated Bases** - Glowing block displays for pillar foundations
+  - **Rotating Crystal Tops** - Large spinning crystals at the top
+  - **Energy Cores** - Pulsing orbs of elemental energy
+  - **Orbiting Runes** - Floating runes circle each pillar
+
+#### Advanced Particle Formations
+- **3D Spheres** - Perfect Fibonacci sphere distributions
+- **Helixes** - DNA-like double/triple helix effects
+- **Vortexes** - Swirling tornado formations
+- **Toruses** - Donut-shaped particle rings
+- **Energy Beams** - Spiral beams connecting crystals
+- **Star Bursts** - Explosive radial patterns
+- **Geometric Cubes** - Wireframe cubic formations
+
+All decorations:
+- Animate smoothly in real-time
+- Auto-cleanup when dragon dies
+- Fully configurable in config.yml
+- Variant-specific colors and materials
+- Zero client-side requirements
 
 ### 💎 Custom Loot System
 
@@ -106,6 +140,8 @@ The plugin is **fully configurable** through `config.yml`:
 - **Loot Tables** - Complete control over drops and chances
 - **Messages** - Customize all plugin messages
 - **Boss Bars** - Configure colors and update rates
+- **3D Visuals** - Enable/disable decorations, customize counts and sizes
+- **Arena Structures** - Configure crystal pillars and energy beams
 
 ### Example Configuration Snippet
 
@@ -149,9 +185,10 @@ mvn clean package
 
 ## 📋 Requirements
 
-- **Minecraft Version:** 1.20.4+
+- **Minecraft Version:** 1.20.4+ (Display Entities require 1.19.4+)
 - **Server Software:** Paper, Purpur, or compatible fork
 - **Java Version:** 17 or higher
+- **Client Requirements:** NONE! All 3D visuals are serverside
 
 ## 🎯 Usage Examples
 
@@ -175,10 +212,12 @@ mvn clean package
 This plugin was built with these principles:
 
 - **Epic Boss Fights** - Create memorable, challenging encounters
-- **Visual Spectacle** - Stunning particle effects and animations
+- **Visual Spectacle** - Stunning particle effects and 3D animations
+- **Serverside Only** - No client mods or resource packs required
 - **Full Customization** - Server owners control everything
-- **Performance** - Optimized for smooth gameplay
+- **Performance** - Optimized for smooth gameplay with async tasks
 - **Vanilla-Friendly** - Works with existing game mechanics
+- **Display Entity Magic** - Leverages 1.19.4+ Display Entities for 3D effects
 
 ## 🐛 Known Issues
 

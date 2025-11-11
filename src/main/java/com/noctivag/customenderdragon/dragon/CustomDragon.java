@@ -1,6 +1,8 @@
 package com.noctivag.customenderdragon.dragon;
 
 import com.noctivag.customenderdragon.CustomEnderDragonPlugin;
+import com.noctivag.customenderdragon.visuals.CrystalStructureManager;
+import com.noctivag.customenderdragon.visuals.DisplayEntityManager;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -31,6 +33,10 @@ public class CustomDragon {
     private final Map<String, Long> abilityCooldowns;
     private double maxHealth;
 
+    // 3D Visual Decorations
+    private DisplayEntityManager.DragonDecorations decorations;
+    private CrystalStructureManager.CrystalArena arena;
+
     public CustomDragon(CustomEnderDragonPlugin plugin, EnderDragon dragon, DragonVariant variant) {
         this.plugin = plugin;
         this.dragon = dragon;
@@ -40,8 +46,20 @@ public class CustomDragon {
 
         setupDragon();
         createBossBar();
+        setup3DVisuals();
         startParticleEffects();
         startAbilityTasks();
+    }
+
+    /**
+     * Sets up 3D visual decorations and arena structures
+     */
+    private void setup3DVisuals() {
+        // Create 3D decorations around dragon
+        decorations = plugin.getDisplayEntityManager().createDragonDecorations(dragon, variant);
+
+        // Create crystal arena structures
+        arena = plugin.getCrystalStructureManager().createCrystalArena(dragon.getLocation(), variant);
     }
 
     private void setupDragon() {
@@ -199,6 +217,17 @@ public class CustomDragon {
             // Hide boss bar from all players
             dragon.getWorld().getPlayers().forEach(this::removePlayerFromBossBar);
         }
+
+        // Remove 3D visual decorations
+        if (decorations != null) {
+            decorations.removeAll();
+        }
+
+        // Remove arena structures
+        if (arena != null) {
+            arena.removeAll();
+        }
+
         dragon.remove();
     }
 
