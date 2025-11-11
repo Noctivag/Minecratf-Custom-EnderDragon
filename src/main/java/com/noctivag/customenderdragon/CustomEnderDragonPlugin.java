@@ -1,8 +1,10 @@
 package com.noctivag.customenderdragon;
 
 import com.noctivag.customenderdragon.abilities.AbilityManager;
+import com.noctivag.customenderdragon.api.CustomEnderDragonAPI;
 import com.noctivag.customenderdragon.commands.DragonCommand;
 import com.noctivag.customenderdragon.dragon.DragonManager;
+import com.noctivag.customenderdragon.integration.PluginIntegrationManager;
 import com.noctivag.customenderdragon.listeners.DragonListener;
 import com.noctivag.customenderdragon.utils.ParticleManager;
 import com.noctivag.customenderdragon.visuals.CrystalStructureManager;
@@ -33,6 +35,7 @@ public class CustomEnderDragonPlugin extends JavaPlugin {
     private AbilityManager abilityManager;
     private DisplayEntityManager displayEntityManager;
     private CrystalStructureManager crystalStructureManager;
+    private PluginIntegrationManager pluginIntegrationManager;
 
     @Override
     public void onEnable() {
@@ -45,6 +48,13 @@ public class CustomEnderDragonPlugin extends JavaPlugin {
         abilityManager = new AbilityManager(this);
         displayEntityManager = new DisplayEntityManager(this);
         crystalStructureManager = new CrystalStructureManager(this);
+        pluginIntegrationManager = new PluginIntegrationManager(this);
+
+        // Setup plugin integrations (Vault, PlaceholderAPI, WorldGuard)
+        pluginIntegrationManager.setupIntegrations();
+
+        // Initialize public API
+        CustomEnderDragonAPI.initialize(this);
 
         // Register commands
         DragonCommand dragonCommand = new DragonCommand(this);
@@ -115,5 +125,9 @@ public class CustomEnderDragonPlugin extends JavaPlugin {
 
     public CrystalStructureManager getCrystalStructureManager() {
         return crystalStructureManager;
+    }
+
+    public PluginIntegrationManager getPluginIntegrationManager() {
+        return pluginIntegrationManager;
     }
 }

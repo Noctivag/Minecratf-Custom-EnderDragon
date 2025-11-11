@@ -13,6 +13,66 @@ general:
   boss-bar-enabled: true
   # Boss bar update interval (ticks)
   boss-bar-update-interval: 20
+  # Enable custom sounds
+  custom-sounds-enabled: true
+  # Sound volume (0.0 - 1.0)
+  sound-volume: 1.0
+  # Sound pitch (0.5 - 2.0)
+  sound-pitch: 1.0
+
+# Plugin Integrations (All Optional - Plugin works without them!)
+integrations:
+  # Vault Economy Integration
+  vault:
+    enabled: true
+    # Give money reward on dragon kill
+    money-rewards-enabled: true
+    # Money amount per dragon kill (multiplied by variant difficulty)
+    base-reward-amount: 1000.0
+    # Variant multipliers
+    variant-multipliers:
+      FIRE: 1.0
+      ICE: 1.2
+      LIGHTNING: 1.5
+      SHADOW: 1.8
+      VOID: 2.5
+
+  # PlaceholderAPI Integration
+  placeholderapi:
+    enabled: true
+    # Provides placeholders:
+    # %customdragon_active_count%
+    # %customdragon_nearest_variant%
+    # %customdragon_nearest_distance%
+    # %customdragon_nearest_phase%
+    # %customdragon_nearest_health%
+    # %customdragon_nearest_health_percent%
+
+  # WorldGuard Integration
+  worldguard:
+    enabled: true
+    # Prevent dragon spawning in protected regions
+    respect-region-protection: true
+    # Required flags for dragon spawning
+    # (Requires WorldGuard to be installed)
+    required-flags:
+      - mob-spawning
+
+# Per-World Settings
+per-world:
+  # Enable per-world configuration
+  enabled: false
+  # Worlds where dragons are allowed
+  allowed-worlds:
+    - world
+    - world_the_end
+  # World-specific settings
+  worlds:
+    world_the_end:
+      # Override global settings for this world
+      dragon-health-multiplier: 1.5
+      damage-multiplier: 1.2
+      loot-multiplier: 1.5
 
 # Dragon Phase System
 phases:

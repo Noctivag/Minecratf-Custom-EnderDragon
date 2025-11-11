@@ -103,6 +103,82 @@ All decorations:
 - **Gravity Well** - Pulls players toward the dragon
 - **Reality Tear** (Phase 3) - Ultimate devastating attack
 
+### 🔌 Plugin Integrations (All Optional!)
+
+The plugin seamlessly integrates with popular plugins - **NO SETUP REQUIRED**! Just install them and the plugin will automatically detect and integrate.
+
+#### Vault Integration
+- **Economy Rewards** - Players get money for killing dragons
+- **Configurable Rewards** - Different amounts per dragon variant
+- **Multipliers** - VOID dragons give 2.5x rewards, FIRE give 1x, etc.
+- **Fully Optional** - Works without Vault installed
+
+#### PlaceholderAPI Integration
+Provides placeholders for use in other plugins (scoreboards, chat, etc.):
+- `%customdragon_active_count%` - Number of active dragons
+- `%customdragon_nearest_variant%` - Variant of nearest dragon
+- `%customdragon_nearest_distance%` - Distance to nearest dragon
+- `%customdragon_nearest_phase%` - Phase number of nearest dragon
+- `%customdragon_nearest_health%` - Current health of nearest dragon
+- `%customdragon_nearest_health_percent%` - Health percentage
+
+#### WorldGuard Integration
+- **Region Protection** - Respects WorldGuard protected regions
+- **Spawn Control** - Configurable region flag requirements
+- **Automatic Detection** - Works seamlessly when WorldGuard is installed
+
+#### LuckPerms Compatibility
+- **Full Compatibility** - All permissions work perfectly with LuckPerms
+- **Context Support** - Standard permission nodes
+- **No Special Setup** - Works out of the box
+
+### 🎵 Custom Sound Effects
+
+- **Death Sounds** - Epic dragon death audio
+- **Configurable Volume & Pitch** - Adjust to your preference
+- **Toggle On/Off** - Disable if you prefer vanilla sounds
+
+### 🔧 Developer API
+
+Plugin exposes a public API for other plugins to use:
+
+```java
+// Get API instance
+CustomEnderDragonAPI api = CustomEnderDragonAPI.getInstance();
+
+// Spawn a custom dragon
+CustomDragon dragon = api.spawnDragon(location, DragonVariant.FIRE);
+
+// Get all active dragons
+Collection<CustomDragon> dragons = api.getAllDragons();
+
+// Check if entity is custom dragon
+boolean isCustom = api.isCustomDragon(enderDragon);
+
+// Remove dragon
+api.removeDragon(dragonUUID);
+```
+
+See [API Documentation](https://github.com/Noctivag/Minecratf-Custom-EnderDragon/wiki/API) for full details.
+
+### ⚙️ Complete Configurability
+
+**EVERYTHING is configurable and can be disabled:**
+
+- ✓ Every dragon variant can be enabled/disabled
+- ✓ Every ability can be enabled/disabled independently
+- ✓ All 3D visual decorations can be toggled
+- ✓ Crystal arena structures optional
+- ✓ Particle effects customizable
+- ✓ Per-world configuration support
+- ✓ Plugin integrations toggle on/off
+- ✓ Sound effects optional
+- ✓ Phase system optional
+- ✓ Boss bars optional
+- ✓ Custom loot optional
+
+**Over 200+ configuration options** - fine-tune everything to your needs!
+
 ## 🎮 Commands
 
 | Command | Description | Permission |

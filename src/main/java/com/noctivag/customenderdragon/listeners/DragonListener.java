@@ -43,6 +43,9 @@ public class DragonListener implements Listener {
             return;
         }
 
+        // Get killer
+        Player killer = dragon.getKiller();
+
         // Clear default drops
         event.getDrops().clear();
         event.setDroppedExp(0);
@@ -50,20 +53,63 @@ public class DragonListener implements Listener {
         // Drop custom loot
         dropCustomLoot(customDragon, dragon.getLocation());
 
+        // Give economy reward (if Vault is enabled)
+        giveEconomyReward(killer, customDragon);
+
         // Broadcast death message
         String message = plugin.getConfig().getString("messages.dragon-killed",
                 "&e%variant% Dragon has been slain!")
                 .replace("%variant%", customDragon.getVariant().getDisplayName())
                 .replace("&", "§");
 
+        if (killer != null) {
+            message = message + " &7by &e" + killer.getName();
+        }
+
+        final String finalMessage = message;
         dragon.getWorld().getPlayers().forEach(player ->
-                player.sendMessage(Component.text(message)));
+                player.sendMessage(Component.text(finalMessage)));
+
+        // Play custom sound effects
+        playDeathSounds(dragon.getLocation());
 
         // Remove from manager
         plugin.getDragonManager().removeDragon(dragon.getUniqueId());
 
         // Experience drop (5x normal)
         event.setDroppedExp(12000);
+    }
+
+    private void giveEconomyReward(Player killer, CustomDragon customDragon) {
+        if (killer == null) return;
+
+        if (!plugin.getConfig().getBoolean("integrations.vault.money-rewards-enabled", true)) {
+            return;
+        }
+
+        double baseAmount = plugin.getConfig().getDouble("integrations.vault.base-reward-amount", 1000.0);
+        double multiplier = plugin.getConfig().getDouble(
+                "integrations.vault.variant-multipliers." + customDragon.getVariant().name(), 1.0);
+
+        double totalReward = baseAmount * multiplier;
+
+        if (plugin.getPluginIntegrationManager().giveMoneyReward(killer, totalReward)) {
+            killer.sendMessage(Component.text("§a§l+ $" + String.format("%.2f", totalReward) +
+                    " §7(Dragon Kill Reward)"));
+        }
+    }
+
+    private void playDeathSounds(Location location) {
+        if (!plugin.getConfig().getBoolean("general.custom-sounds-enabled", true)) {
+            return;
+        }
+
+        float volume = (float) plugin.getConfig().getDouble("general.sound-volume", 1.0);
+        float pitch = (float) plugin.getConfig().getDouble("general.sound-pitch", 1.0);
+
+        // Play epic death sound
+        location.getWorld().playSound(location, org.bukkit.Sound.ENTITY_ENDER_DRAGON_DEATH, volume, pitch);
+        location.getWorld().playSound(location, org.bukkit.Sound.ENTITY_GENERIC_EXPLODE, volume * 0.8f, pitch * 0.5f);
     }
 
     private void dropCustomLoot(CustomDragon customDragon, Location location) {

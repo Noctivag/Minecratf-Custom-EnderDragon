@@ -6,6 +6,9 @@ author: Noctivag
 description: Next-level custom EnderDragon plugin with multiple variants, phases, and epic abilities
 website: https://github.com/Noctivag/Minecratf-Custom-EnderDragon
 
+# Soft Dependencies (Optional integrations - plugin works without them)
+softdepend: [Vault, PlaceholderAPI, WorldGuard, LuckPerms]
+
 commands:
   customdragon:
     description: Main command for Custom EnderDragon
