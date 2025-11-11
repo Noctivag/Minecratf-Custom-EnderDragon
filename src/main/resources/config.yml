@@ -1,0 +1,273 @@
+# ===================================
+# Custom EnderDragon Plugin Config
+# Next-Level Dragon Enhancement
+# ===================================
+
+# General Settings
+general:
+  # Enable debug messages
+  debug: false
+  # Dragon name format (use %variant% for variant name)
+  name-format: "&5&l%variant% Dragon"
+  # Enable boss bar
+  boss-bar-enabled: true
+  # Boss bar update interval (ticks)
+  boss-bar-update-interval: 20
+
+# Dragon Phase System
+phases:
+  # Enable phase system (dragon gets stronger at certain health thresholds)
+  enabled: true
+  # Phase thresholds (percentage of health)
+  phase-1-threshold: 100  # Full health
+  phase-2-threshold: 66   # 66% health
+  phase-3-threshold: 33   # 33% health - ENRAGE
+
+# Dragon Variants Configuration
+# Each variant has unique abilities, particles, and stats
+variants:
+  FIRE:
+    enabled: true
+    display-name: "&c&lFire"
+    health: 300.0
+    damage-multiplier: 1.5
+    speed-multiplier: 1.0
+    boss-bar-color: RED
+    abilities:
+      fireball:
+        enabled: true
+        cooldown: 60  # ticks
+        damage: 12.0
+        explosion-power: 3.0
+      fire-aura:
+        enabled: true
+        radius: 8.0
+        damage: 2.0
+        interval: 20  # ticks
+      meteor-shower:
+        enabled: true
+        cooldown: 200
+        duration: 100
+        meteor-count: 15
+        phase-required: 3  # Only in phase 3
+    particles:
+      - type: FLAME
+        count: 5
+        offset: 0.5
+      - type: LAVA
+        count: 2
+        offset: 0.3
+    loot:
+      - type: DIAMOND
+        amount: 10-20
+        chance: 100
+      - type: NETHERITE_INGOT
+        amount: 3-6
+        chance: 80
+      - type: FIRE_CHARGE
+        amount: 16-32
+        chance: 100
+      - type: BLAZE_ROD
+        amount: 10-15
+        chance: 90
+
+  ICE:
+    enabled: true
+    display-name: "&b&lIce"
+    health: 280.0
+    damage-multiplier: 1.3
+    speed-multiplier: 0.9
+    boss-bar-color: BLUE
+    abilities:
+      ice-shard:
+        enabled: true
+        cooldown: 50
+        damage: 10.0
+        slowness-duration: 100
+      freeze-aura:
+        enabled: true
+        radius: 10.0
+        slowness-amplifier: 2
+        interval: 40
+      blizzard:
+        enabled: true
+        cooldown: 180
+        duration: 120
+        radius: 20.0
+        phase-required: 3
+    particles:
+      - type: SNOWFLAKE
+        count: 8
+        offset: 0.5
+      - type: CLOUD
+        count: 3
+        offset: 0.4
+    loot:
+      - type: DIAMOND
+        amount: 8-16
+        chance: 100
+      - type: ICE
+        amount: 32-64
+        chance: 100
+      - type: BLUE_ICE
+        amount: 16-32
+        chance: 80
+      - type: PACKED_ICE
+        amount: 32-48
+        chance: 100
+
+  LIGHTNING:
+    enabled: true
+    display-name: "&e&lLightning"
+    health: 250.0
+    damage-multiplier: 1.8
+    speed-multiplier: 1.3
+    boss-bar-color: YELLOW
+    abilities:
+      lightning-strike:
+        enabled: true
+        cooldown: 40
+        damage: 15.0
+        chain-range: 5.0
+      thunder-aura:
+        enabled: true
+        radius: 12.0
+        strike-chance: 0.1
+        interval: 30
+      storm-rage:
+        enabled: true
+        cooldown: 160
+        duration: 100
+        strike-count: 20
+        phase-required: 3
+    particles:
+      - type: ELECTRIC_SPARK
+        count: 10
+        offset: 0.6
+      - type: END_ROD
+        count: 5
+        offset: 0.5
+    loot:
+      - type: DIAMOND
+        amount: 12-24
+        chance: 100
+      - type: NETHERITE_SCRAP
+        amount: 4-8
+        chance: 70
+      - type: GLOWSTONE
+        amount: 32-64
+        chance: 100
+      - type: GOLDEN_APPLE
+        amount: 5-10
+        chance: 85
+
+  SHADOW:
+    enabled: true
+    display-name: "&8&lShadow"
+    health: 320.0
+    damage-multiplier: 1.4
+    speed-multiplier: 1.1
+    boss-bar-color: PURPLE
+    abilities:
+      shadow-strike:
+        enabled: true
+        cooldown: 70
+        damage: 14.0
+        blindness-duration: 60
+      teleport:
+        enabled: true
+        cooldown: 100
+        range: 30.0
+      shadow-clones:
+        enabled: true
+        cooldown: 220
+        clone-count: 2
+        clone-duration: 200
+        phase-required: 2
+    particles:
+      - type: SMOKE_LARGE
+        count: 8
+        offset: 0.5
+      - type: SQUID_INK
+        count: 4
+        offset: 0.4
+      - type: SOUL
+        count: 3
+        offset: 0.3
+    loot:
+      - type: DIAMOND
+        amount: 15-25
+        chance: 100
+      - type: NETHERITE_INGOT
+        amount: 4-7
+        chance: 75
+      - type: OBSIDIAN
+        amount: 16-32
+        chance: 100
+      - type: ENDER_PEARL
+        amount: 16-24
+        chance: 100
+
+  VOID:
+    enabled: true
+    display-name: "&5&lVoid"
+    health: 400.0
+    damage-multiplier: 2.0
+    speed-multiplier: 1.2
+    boss-bar-color: PINK
+    abilities:
+      void-beam:
+        enabled: true
+        cooldown: 80
+        damage: 20.0
+        wither-duration: 100
+      gravity-well:
+        enabled: true
+        cooldown: 120
+        radius: 15.0
+        pull-strength: 1.5
+        duration: 60
+      reality-tear:
+        enabled: true
+        cooldown: 250
+        damage: 30.0
+        radius: 10.0
+        phase-required: 3
+    particles:
+      - type: PORTAL
+        count: 15
+        offset: 0.8
+      - type: DRAGON_BREATH
+        count: 8
+        offset: 0.6
+      - type: REVERSE_PORTAL
+        count: 5
+        offset: 0.5
+    loot:
+      - type: DIAMOND
+        amount: 20-32
+        chance: 100
+      - type: NETHERITE_INGOT
+        amount: 6-10
+        chance: 100
+      - type: ELYTRA
+        amount: 1
+        chance: 50
+      - type: DRAGON_HEAD
+        amount: 1
+        chance: 75
+      - type: ENCHANTED_GOLDEN_APPLE
+        amount: 3-6
+        chance: 100
+
+# Messages
+messages:
+  prefix: "&5&l[CustomDragon]&r "
+  dragon-spawned: "&aSpawned %variant% Dragon at your location!"
+  dragon-killed: "&e%variant% Dragon has been slain!"
+  dragon-removed: "&cRemoved %count% custom dragon(s)!"
+  no-dragons: "&cNo custom dragons found!"
+  no-permission: "&cYou don't have permission to do that!"
+  invalid-variant: "&cInvalid variant! Use: FIRE, ICE, LIGHTNING, SHADOW, VOID"
+  config-reloaded: "&aConfiguration reloaded successfully!"
+  phase-change: "&6%variant% Dragon entered Phase %phase%!"

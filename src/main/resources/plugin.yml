@@ -1,0 +1,65 @@
+name: CustomEnderDragon
+version: '2.0.0'
+main: com.noctivag.customenderdragon.CustomEnderDragonPlugin
+api-version: '1.20'
+author: Noctivag
+description: Next-level custom EnderDragon plugin with multiple variants, phases, and epic abilities
+website: https://github.com/Noctivag/Minecratf-Custom-EnderDragon
+
+commands:
+  customdragon:
+    description: Main command for Custom EnderDragon
+    usage: /<command> <spawn|list|remove|reload>
+    aliases: [cdragon, cdr]
+    permission: customdragon.use
+
+permissions:
+  customdragon.*:
+    description: Gives access to all Custom EnderDragon permissions
+    default: op
+    children:
+      customdragon.use: true
+      customdragon.spawn: true
+      customdragon.remove: true
+      customdragon.reload: true
+      customdragon.spawn.fire: true
+      customdragon.spawn.ice: true
+      customdragon.spawn.lightning: true
+      customdragon.spawn.shadow: true
+      customdragon.spawn.void: true
+
+  customdragon.use:
+    description: Allows using the /customdragon command
+    default: op
+
+  customdragon.spawn:
+    description: Allows spawning custom dragons
+    default: op
+
+  customdragon.spawn.fire:
+    description: Allows spawning Fire dragons
+    default: op
+
+  customdragon.spawn.ice:
+    description: Allows spawning Ice dragons
+    default: op
+
+  customdragon.spawn.lightning:
+    description: Allows spawning Lightning dragons
+    default: op
+
+  customdragon.spawn.shadow:
+    description: Allows spawning Shadow dragons
+    default: op
+
+  customdragon.spawn.void:
+    description: Allows spawning Void dragons
+    default: op
+
+  customdragon.remove:
+    description: Allows removing custom dragons
+    default: op
+
+  customdragon.reload:
+    description: Allows reloading the plugin configuration
+    default: op
