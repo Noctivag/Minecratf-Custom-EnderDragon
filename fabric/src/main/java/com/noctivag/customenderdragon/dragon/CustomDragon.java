@@ -84,14 +84,14 @@ public class CustomDragon {
         // Update phase based on health
         updatePhase();
 
-        // Particle effects every 5 ticks
+        // Particle effects every tick
         particleTickCounter++;
         if (particleTickCounter >= 5) {
             CustomEnderDragonMod.getParticleManager().spawnParticles(dragon, variant);
             particleTickCounter = 0;
         }
 
-        // Ability execution every 2 seconds (40 ticks)
+        // Ability execution every second
         abilityTickCounter++;
         if (abilityTickCounter >= 40) {
             CustomEnderDragonMod.getAbilityManager().executeAbilities(this);

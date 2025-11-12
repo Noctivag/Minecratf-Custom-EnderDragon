@@ -1,0 +1,33 @@
+{
+	"schemaVersion": 1,
+	"id": "customenderdragon",
+	"version": "${version}",
+	"name": "Custom EnderDragon",
+	"description": "Next-level custom EnderDragon mod with multiple variants, phases, and epic abilities",
+	"authors": [
+		"Noctivag"
+	],
+	"contact": {
+		"sources": "https://github.com/Noctivag/Minecratf-Custom-EnderDragon"
+	},
+	"license": "MIT",
+	"icon": "assets/customenderdragon/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.noctivag.customenderdragon.CustomEnderDragonMod"
+		]
+	},
+	"mixins": [
+		"customenderdragon.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.0",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"cloth-config": ">=15.0.0"
+	}
+}

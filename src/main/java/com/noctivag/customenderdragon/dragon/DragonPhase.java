@@ -1,46 +1,41 @@
 package com.noctivag.customenderdragon.dragon;
 
 /**
- * Represents the different combat phases of a custom dragon
- * Dragons become more powerful and aggressive as they enter later phases
+ * Dragon combat phases based on health percentage
  */
 public enum DragonPhase {
-    PHASE_1(1, 100, "Awakening"),
-    PHASE_2(2, 66, "Enraged"),
-    PHASE_3(3, 33, "Desperate Fury");
+    PHASE_1(1, 100, 67),
+    PHASE_2(2, 66, 34),
+    PHASE_3(3, 33, 0);
 
     private final int phaseNumber;
-    private final int healthThreshold;
-    private final String phaseName;
+    private final double healthPercentStart;
+    private final double healthPercentEnd;
 
-    DragonPhase(int phaseNumber, int healthThreshold, String phaseName) {
+    DragonPhase(int phaseNumber, double healthPercentStart, double healthPercentEnd) {
         this.phaseNumber = phaseNumber;
-        this.healthThreshold = healthThreshold;
-        this.phaseName = phaseName;
+        this.healthPercentStart = healthPercentStart;
+        this.healthPercentEnd = healthPercentEnd;
     }
 
     public int getPhaseNumber() {
         return phaseNumber;
     }
 
-    public int getHealthThreshold() {
-        return healthThreshold;
+    public double getHealthPercentStart() {
+        return healthPercentStart;
     }
 
-    public String getPhaseName() {
-        return phaseName;
+    public double getHealthPercentEnd() {
+        return healthPercentEnd;
     }
 
-    /**
-     * Determines the appropriate phase based on health percentage
-     */
-    public static DragonPhase getPhaseForHealth(double healthPercent) {
-        if (healthPercent <= 33) {
-            return PHASE_3;
-        } else if (healthPercent <= 66) {
-            return PHASE_2;
-        } else {
-            return PHASE_1;
+    public static DragonPhase fromHealthPercent(double healthPercent) {
+        for (DragonPhase phase : values()) {
+            if (healthPercent <= phase.healthPercentStart && healthPercent > phase.healthPercentEnd) {
+                return phase;
+            }
         }
+        return PHASE_3;
     }
 }
