@@ -45,89 +45,147 @@ public class CustomDragon {
      * Sets up 3D visual decorations and arena structures
      */
     private void setup3DVisuals() {
-        // Create 3D decorations around dragon
-        decorations = CustomEnderDragonMod.getDisplayEntityManager().createDragonDecorations(dragon, variant);
+        try {
+            // Create 3D decorations around dragon
+            DisplayEntityManager displayManager = CustomEnderDragonMod.getDisplayEntityManager();
+            if (displayManager != null) {
+                decorations = displayManager.createDragonDecorations(dragon, variant);
+            }
 
-        // Create crystal arena structures
-        arena = CustomEnderDragonMod.getCrystalStructureManager().createCrystalArena(dragon.getBlockPos(), variant, dragon.getWorld());
+            // Create crystal arena structures
+            CrystalStructureManager crystalManager = CustomEnderDragonMod.getCrystalStructureManager();
+            if (crystalManager != null && dragon.getBlockPos() != null && dragon.getWorld() != null) {
+                arena = crystalManager.createCrystalArena(dragon.getBlockPos(), variant, dragon.getWorld());
+            }
+        } catch (Exception e) {
+            CustomEnderDragonMod.LOGGER.error("Failed to setup 3D visuals for dragon", e);
+        }
     }
 
     private void setupDragon() {
-        ModConfig.VariantConfig config = ModConfig.getVariantConfig(variant);
-        
-        // Set dragon attributes
-        dragon.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(config.health);
-        dragon.setHealth(config.health);
-        this.maxHealth = config.health;
+        try {
+            ModConfig.VariantConfig config = ModConfig.getVariantConfig(variant);
 
-        // Set custom name with color
-        Formatting formatting = switch (variant) {
-            case FIRE -> Formatting.RED;
-            case ICE -> Formatting.AQUA;
-            case LIGHTNING -> Formatting.YELLOW;
-            case SHADOW -> Formatting.DARK_PURPLE;
-            case VOID -> Formatting.DARK_GRAY;
-        };
-        
-        dragon.setCustomName(Text.literal(config.displayName + " Dragon").formatted(formatting, Formatting.BOLD));
-        dragon.setCustomNameVisible(true);
+            if (config == null) {
+                CustomEnderDragonMod.LOGGER.error("Config is null for variant {}, using defaults", variant.name());
+                this.maxHealth = 200.0;
+                dragon.setHealth((float) this.maxHealth);
+                dragon.setCustomName(Text.literal(variant.getDisplayName() + " Dragon").formatted(Formatting.RED, Formatting.BOLD));
+                dragon.setCustomNameVisible(true);
+                return;
+            }
+
+            // Set dragon attributes with null check
+            var healthAttribute = dragon.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
+            if (healthAttribute != null) {
+                healthAttribute.setBaseValue(config.health);
+                dragon.setHealth(config.health);
+                this.maxHealth = config.health;
+            } else {
+                CustomEnderDragonMod.LOGGER.error("Could not get health attribute for dragon, using default");
+                this.maxHealth = config.health;
+                dragon.setHealth(config.health);
+            }
+
+            // Set custom name with color
+            Formatting formatting = switch (variant) {
+                case FIRE -> Formatting.RED;
+                case ICE -> Formatting.AQUA;
+                case LIGHTNING -> Formatting.YELLOW;
+                case SHADOW -> Formatting.DARK_PURPLE;
+                case VOID -> Formatting.DARK_GRAY;
+            };
+
+            String displayName = config.displayName != null ? config.displayName : variant.getDisplayName();
+            dragon.setCustomName(Text.literal(displayName + " Dragon").formatted(formatting, Formatting.BOLD));
+            dragon.setCustomNameVisible(true);
+        } catch (Exception e) {
+            CustomEnderDragonMod.LOGGER.error("Failed to setup dragon attributes", e);
+            // Set minimal defaults
+            this.maxHealth = 200.0;
+            dragon.setHealth((float) this.maxHealth);
+        }
     }
 
     /**
      * Called every tick to update dragon effects
      */
     public void tick() {
-        if (dragon.isDead() || dragon.isRemoved()) {
-            return;
-        }
+        try {
+            if (dragon == null || dragon.isDead() || dragon.isRemoved()) {
+                return;
+            }
 
-        // Update phase based on health
-        updatePhase();
+            // Update phase based on health
+            updatePhase();
 
-        // Particle effects every 5 ticks
-        particleTickCounter++;
-        if (particleTickCounter >= 5) {
-            CustomEnderDragonMod.getParticleManager().spawnParticles(dragon, variant);
-            particleTickCounter = 0;
-        }
+            // Particle effects every 5 ticks
+            particleTickCounter++;
+            if (particleTickCounter >= 5) {
+                var particleManager = CustomEnderDragonMod.getParticleManager();
+                if (particleManager != null) {
+                    particleManager.spawnParticles(dragon, variant);
+                }
+                particleTickCounter = 0;
+            }
 
-        // Ability execution every 2 seconds (40 ticks)
-        abilityTickCounter++;
-        if (abilityTickCounter >= 40) {
-            CustomEnderDragonMod.getAbilityManager().executeAbilities(this);
-            abilityTickCounter = 0;
-        }
+            // Ability execution every 2 seconds (40 ticks)
+            abilityTickCounter++;
+            if (abilityTickCounter >= 40) {
+                var abilityManager = CustomEnderDragonMod.getAbilityManager();
+                if (abilityManager != null) {
+                    abilityManager.executeAbilities(this);
+                }
+                abilityTickCounter = 0;
+            }
 
-        // Update decorations
-        if (decorations != null) {
-            decorations.update(dragon);
+            // Update decorations
+            if (decorations != null) {
+                decorations.update(dragon);
+            }
+        } catch (Exception e) {
+            CustomEnderDragonMod.LOGGER.error("Error during dragon tick", e);
         }
     }
 
     private void updatePhase() {
-        double healthPercent = (dragon.getHealth() / maxHealth) * 100;
-        DragonPhase newPhase = DragonPhase.fromHealthPercent(healthPercent);
+        try {
+            if (maxHealth <= 0) {
+                maxHealth = 200.0; // Prevent division by zero
+            }
+            double healthPercent = (dragon.getHealth() / maxHealth) * 100;
+            DragonPhase newPhase = DragonPhase.fromHealthPercent(healthPercent);
 
-        if (newPhase != currentPhase) {
-            currentPhase = newPhase;
-            onPhaseChange();
+            if (newPhase != currentPhase) {
+                currentPhase = newPhase;
+                onPhaseChange();
+            }
+        } catch (Exception e) {
+            CustomEnderDragonMod.LOGGER.error("Error updating dragon phase", e);
         }
     }
 
     private void onPhaseChange() {
-        CustomEnderDragonMod.getParticleManager().spawnPhaseChangeEffect(dragon, variant, currentPhase);
-        
-        // Broadcast phase change
-        World world = dragon.getWorld();
-        if (!world.isClient) {
-            Text message = Text.literal("The " + variant.getDisplayName() + " Dragon has entered Phase " + 
-                currentPhase.getPhaseNumber() + "!").formatted(Formatting.GOLD, Formatting.BOLD);
-            
-            world.getPlayers().forEach(player -> {
-                if (player instanceof ServerPlayerEntity serverPlayer) {
-                    serverPlayer.sendMessage(message, false);
-                }
-            });
+        try {
+            var particleManager = CustomEnderDragonMod.getParticleManager();
+            if (particleManager != null) {
+                particleManager.spawnPhaseChangeEffect(dragon, variant, currentPhase);
+            }
+
+            // Broadcast phase change
+            World world = dragon.getWorld();
+            if (world != null && !world.isClient) {
+                Text message = Text.literal("The " + variant.getDisplayName() + " Dragon has entered Phase " +
+                    currentPhase.getPhaseNumber() + "!").formatted(Formatting.GOLD, Formatting.BOLD);
+
+                world.getPlayers().forEach(player -> {
+                    if (player instanceof ServerPlayerEntity serverPlayer) {
+                        serverPlayer.sendMessage(message, false);
+                    }
+                });
+            }
+        } catch (Exception e) {
+            CustomEnderDragonMod.LOGGER.error("Error during phase change", e);
         }
     }
 
