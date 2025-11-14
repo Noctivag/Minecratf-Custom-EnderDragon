@@ -11,7 +11,6 @@
 		"sources": "https://github.com/Noctivag/Minecratf-Custom-EnderDragon"
 	},
 	"license": "MIT",
-	"icon": "assets/customenderdragon/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -21,9 +20,10 @@
 	"mixins": [
 		"customenderdragon.mixins.json"
 	],
+	"accessWidener": "customenderdragon.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.16.0",
-		"minecraft": "~1.21.1",
+		"minecraft": ">=1.21.10",
 		"java": ">=21",
 		"fabric-api": "*"
 	},

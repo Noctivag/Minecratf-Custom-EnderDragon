@@ -21,6 +21,7 @@ public class ModConfig {
     public static class Config {
         public Map<String, VariantConfig> variants = new HashMap<>();
         public GeneralConfig general = new GeneralConfig();
+        public VariantWeightsConfig variantWeights = new VariantWeightsConfig();
         public MessagesConfig messages = new MessagesConfig();
 
         public Config() {
@@ -85,9 +86,18 @@ public class ModConfig {
     }
 
     public static class GeneralConfig {
+        public boolean enableCustomDragons = true;
         public boolean bossBarEnabled = true;
         public int particleUpdateInterval = 5;
         public int abilityUpdateInterval = 40;
+    }
+
+    public static class VariantWeightsConfig {
+        public int fireWeight = 20;
+        public int iceWeight = 20;
+        public int lightningWeight = 20;
+        public int shadowWeight = 20;
+        public int voidWeight = 20;
     }
 
     public static class MessagesConfig {

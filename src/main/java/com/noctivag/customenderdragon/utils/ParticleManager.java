@@ -14,12 +14,12 @@ import net.minecraft.util.math.Vec3d;
 public class ParticleManager {
 
     public void spawnParticles(EnderDragonEntity dragon, DragonVariant variant) {
-        if (!(dragon.getWorld() instanceof ServerWorld serverWorld)) {
+        if (!(dragon.getEntityWorld() instanceof ServerWorld serverWorld)) {
             return;
         }
-
+        
         ParticleEffect particle = getVariantParticle(variant);
-        Vec3d pos = dragon.getPos().add(0, 2, 0);
+        Vec3d pos = new Vec3d(dragon.getX(), dragon.getY() + 2, dragon.getZ());
 
         serverWorld.spawnParticles(particle, pos.x, pos.y, pos.z, 5, 0.5, 0.5, 0.5, 0.0);
         
@@ -28,7 +28,7 @@ public class ParticleManager {
     }
 
     private void spawnWingTrail(ServerWorld world, EnderDragonEntity dragon, ParticleEffect particle) {
-        Vec3d pos = dragon.getPos();
+        Vec3d pos = new Vec3d(dragon.getX(), dragon.getY(), dragon.getZ());
         Vec3d velocity = dragon.getVelocity();
 
         if (velocity.lengthSquared() < 0.01) {
@@ -44,12 +44,12 @@ public class ParticleManager {
     }
 
     public void spawnPhaseChangeEffect(EnderDragonEntity dragon, DragonVariant variant, DragonPhase phase) {
-        if (!(dragon.getWorld() instanceof ServerWorld serverWorld)) {
+        if (!(dragon.getEntityWorld() instanceof ServerWorld serverWorld)) {
             return;
         }
-
+        
         ParticleEffect particle = getVariantParticle(variant);
-        Vec3d pos = dragon.getPos();
+        Vec3d pos = new Vec3d(dragon.getX(), dragon.getY(), dragon.getZ());
 
         // Create expanding ring effect
         for (int ring = 0; ring < 3; ring++) {

@@ -17,6 +17,9 @@ public class DragonManager {
         this.activeDragons = new HashMap<>();
     }
 
+    /**
+     * Spawns a new custom dragon at the specified location
+     */
     public CustomDragon spawnDragon(ServerWorld world, BlockPos pos, DragonVariant variant) {
         EnderDragonEntity dragon = new EnderDragonEntity(net.minecraft.entity.EntityType.ENDER_DRAGON, world);
         dragon.refreshPositionAndAngles(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
@@ -28,6 +31,15 @@ public class DragonManager {
 
         CustomEnderDragonMod.LOGGER.info("Spawned {} dragon at {}", variant.name(), pos);
         return customDragon;
+    }
+
+    /**
+     * Registers an existing EnderDragon entity as a custom dragon
+     * Used when converting vanilla dragons to custom dragons
+     */
+    public void registerExistingDragon(EnderDragonEntity dragon, CustomDragon customDragon) {
+        activeDragons.put(dragon.getUuid(), customDragon);
+        CustomEnderDragonMod.LOGGER.debug("Registered existing dragon {} as custom dragon", dragon.getUuid());
     }
 
     public void removeDragon(UUID uuid) {

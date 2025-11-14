@@ -1,22 +1,32 @@
-# Custom EnderDragon Plugin - Next Level Edition
+# Custom EnderDragon Mod - Fabric Edition
 
-[![Minecraft](https://img.shields.io/badge/Minecraft-1.20.4-brightgreen.svg)](https://www.minecraft.net/)
-[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.java.com/)
-[![Paper](https://img.shields.io/badge/Paper-API-blue.svg)](https://papermc.io/)
+[![Minecraft](https://img.shields.io/badge/Minecraft-1.21.1-brightgreen.svg)](https://www.minecraft.net/)
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.java.com/)
+[![Fabric](https://img.shields.io/badge/Fabric-API-blue.svg)](https://fabricmc.net/)
 
 ## 🐲 Overview
 
-Take your Minecraft dragon fights to the **next level** with this advanced Custom EnderDragon plugin! Featuring **5 unique dragon variants**, each with their own abilities, particle effects, and combat phases. This plugin transforms the standard EnderDragon fight into an epic, customizable boss battle experience.
+Transform the Ender Dragon fight into an **epic boss battle** with this Fabric mod! Featuring **5 unique dragon variants**, each with their own abilities, visual effects, and combat phases. Every EnderDragon that spawns will automatically become a custom variant!
 
-## ✨ Features
+## ✨ Key Features
 
 ### 🔥 5 Unique Dragon Variants
 
+Each naturally spawning EnderDragon is **automatically converted** to a random variant:
+
 - **FIRE Dragon** - Master of flames and meteors
-- **ICE Dragon** - Controller of frost and blizzards
-- **LIGHTNING Dragon** - Wielder of thunder and storm
-- **SHADOW Dragon** - Manipulator of darkness and teleportation
+- **ICE Dragon** - Controller of frost and blizzards  
+- **LIGHTNING Dragon** - Wielder of thunder and storms
+- **SHADOW Dragon** - Manipulator of darkness
 - **VOID Dragon** - Reality warper with devastating power
+
+### ⚙️ Auto-Conversion System
+
+✅ **No manual spawning required!** The mod automatically:
+- Detects when an EnderDragon spawns (naturally or via `/summon`)
+- Converts it to a random custom variant based on configured weights
+- Applies unique attributes, abilities, and visual effects
+- Broadcasts a spawn message to all players
 
 ### ⚔️ Dynamic Combat System
 
@@ -107,135 +117,137 @@ All decorations:
 
 | Command | Description | Permission |
 |---------|-------------|------------|
-| `/customdragon spawn <variant>` | Spawn a custom dragon | `customdragon.spawn` |
-| `/customdragon list` | List all active dragons | `customdragon.use` |
-| `/customdragon remove` | Remove all custom dragons | `customdragon.remove` |
-| `/customdragon reload` | Reload configuration | `customdragon.reload` |
+| `/customdragon spawn <variant>` | Manually spawn a specific variant | op level 2 |
+| `/customdragon list` | List all active custom dragons | op level 2 |
+| `/customdragon remove` | Remove all custom dragons | op level 2 |
 
-**Aliases:** `/cdragon`, `/cdr`
-
-## 🔑 Permissions
-
-| Permission | Description | Default |
-|------------|-------------|---------|
-| `customdragon.*` | All permissions | op |
-| `customdragon.use` | Use base command | op |
-| `customdragon.spawn` | Spawn dragons | op |
-| `customdragon.spawn.fire` | Spawn Fire dragons | op |
-| `customdragon.spawn.ice` | Spawn Ice dragons | op |
-| `customdragon.spawn.lightning` | Spawn Lightning dragons | op |
-| `customdragon.spawn.shadow` | Spawn Shadow dragons | op |
-| `customdragon.spawn.void` | Spawn Void dragons | op |
-| `customdragon.remove` | Remove dragons | op |
-| `customdragon.reload` | Reload config | op |
+**Note:** Dragons also spawn automatically when summoned via `/summon minecraft:ender_dragon`
 
 ## ⚙️ Configuration
 
-The plugin is **fully configurable** through `config.yml`:
+The mod uses a **JSON configuration** file located at `config/customenderdragon.json`:
 
-- **Dragon Stats** - Health, damage, speed per variant
-- **Ability Settings** - Cooldowns, damage, effects for each ability
-- **Particle Effects** - Type, count, and offset for visual effects
-- **Phase System** - Health thresholds and phase settings
-- **Loot Tables** - Complete control over drops and chances
-- **Messages** - Customize all plugin messages
-- **Boss Bars** - Configure colors and update rates
-- **3D Visuals** - Enable/disable decorations, customize counts and sizes
-- **Arena Structures** - Configure crystal pillars and energy beams
-
-### Example Configuration Snippet
-
-```yaml
-variants:
-  FIRE:
-    enabled: true
-    display-name: "&c&lFire"
-    health: 300.0
-    damage-multiplier: 1.5
-    abilities:
-      fireball:
-        enabled: true
-        cooldown: 60
-        damage: 12.0
-        explosion-power: 3.0
+### General Settings
+```json
+{
+  "general": {
+    "enableCustomDragons": true,
+    "bossBarEnabled": true,
+    "particleUpdateInterval": 5,
+    "abilityUpdateInterval": 40
+  }
+}
 ```
 
-See `config.yml` for full configuration options.
+### Variant Spawn Weights
+Control the probability of each variant spawning:
+```json
+{
+  "variantWeights": {
+    "fireWeight": 20,
+    "iceWeight": 20,
+    "lightningWeight": 20,
+    "shadowWeight": 20,
+    "voidWeight": 20
+  }
+}
+```
+
+Higher weights = higher spawn chance. Set a weight to `0` to disable that variant entirely.
+
+### Per-Variant Configuration
+```json
+{
+  "variants": {
+    "FIRE": {
+      "enabled": true,
+      "displayName": "Fire",
+      "health": 300.0,
+      "abilities": {
+        "fireball": {
+          "enabled": true,
+          "cooldown": 100,
+          "damage": 10.0,
+          "radius": 10.0
+        }
+      }
+    }
+  }
+}
+```
 
 ## 📦 Installation
 
-1. **Download** the latest release JAR file
-2. **Place** it in your server's `plugins` folder
-3. **Restart** your server
-4. **Configure** settings in `plugins/CustomEnderDragon/config.yml` (optional)
-5. **Reload** with `/customdragon reload`
+### For Players
+1. **Install Fabric Loader** for Minecraft 1.21.1
+2. **Download Fabric API** from [Modrinth](https://modrinth.com/mod/fabric-api) or [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
+3. **Download this mod** (customenderdragon-2.0.0.jar)
+4. **Place both JARs** in your `.minecraft/mods` folder
+5. **Launch Minecraft** with the Fabric profile
+
+### For Servers
+1. **Install Fabric Loader** for your server
+2. **Place** both Fabric API and this mod in the `mods` folder
+3. **Start** the server
+4. **Configure** settings in `config/customenderdragon.json`
+5. **Restart** the server to apply changes
 
 ## 🔨 Building from Source
 
+See [BUILD.md](BUILD.md) for detailed build instructions.
+
+Quick build:
 ```bash
-# Clone the repository
-git clone https://github.com/Noctivag/Minecratf-Custom-EnderDragon.git
-cd Minecratf-Custom-EnderDragon
-
-# Build with Maven
-mvn clean package
-
-# Find the JAR in target/CustomEnderDragon-2.0.0.jar
+./gradlew clean build
 ```
+
+Output: `build/libs/customenderdragon-2.0.0.jar`
 
 ## 📋 Requirements
 
-- **Minecraft Version:** 1.20.4+ (Display Entities require 1.19.4+)
-- **Server Software:** Paper, Purpur, or compatible fork
-- **Java Version:** 17 or higher
-- **Client Requirements:** NONE! All 3D visuals are serverside
+- **Minecraft:** 1.21.1
+- **Fabric Loader:** 0.16.0+
+- **Fabric API:** 0.110.0+1.21.1
+- **Java:** 21 or higher
+- **Client Requirements:** Fabric Loader + Fabric API + This Mod
 
-## 🎯 Usage Examples
+## 🎯 How It Works
 
-### Spawn a Fire Dragon
+1. **Dragon Spawns** - Either naturally in The End or via `/summon`
+2. **Auto-Detection** - Mod detects the new EnderDragon entity
+3. **Variant Selection** - Chooses a random variant based on configured weights
+4. **Conversion** - Applies custom attributes, name, and abilities
+5. **Visual Effects** - Starts particle effects and 3D decorations
+6. **Combat** - Dragon uses abilities and changes phases as it takes damage
+7. **Death** - Broadcasts message, drops custom loot, cleanup
+
+## 📝 Configuration Example
+
+Disable custom dragons entirely:
+```json
+{
+  "general": {
+    "enableCustomDragons": false
+  }
+}
 ```
-/customdragon spawn FIRE
+
+Only spawn Fire and Ice dragons:
+```json
+{
+  "variantWeights": {
+    "fireWeight": 50,
+    "iceWeight": 50,
+    "lightningWeight": 0,
+    "shadowWeight": 0,
+    "voidWeight": 0
+  }
+}
 ```
-
-### List Active Dragons
-```
-/customdragon list
-```
-
-### Remove All Dragons
-```
-/customdragon remove
-```
-
-## 🎨 Design Philosophy
-
-This plugin was built with these principles:
-
-- **Epic Boss Fights** - Create memorable, challenging encounters
-- **Visual Spectacle** - Stunning particle effects and 3D animations
-- **Serverside Only** - No client mods or resource packs required
-- **Full Customization** - Server owners control everything
-- **Performance** - Optimized for smooth gameplay with async tasks
-- **Vanilla-Friendly** - Works with existing game mechanics
-- **Display Entity Magic** - Leverages 1.19.4+ Display Entities for 3D effects
-
-## 🐛 Known Issues
-
-- Shadow Dragon clone ability is reserved for future implementation
-- Boss bars may occasionally desync with dragon health (resets on next update)
-
-## 🔮 Planned Features
-
-- [ ] Custom dragon models/textures support
-- [ ] Arena system with automatic spawning
-- [ ] Dragon taming mechanics
-- [ ] Rewards GUI
-- [ ] Dragon egg hatching system
-- [ ] World boss events
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🤝 Contributing
 
@@ -249,11 +261,11 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 🌟 Credits
 
 - **Author:** Noctivag
-- **Built with:** Paper API
-- **Special Thanks:** Minecraft community for inspiration
+- **Built with:** Fabric API + Cloth Config
+- **Fabric Version:** 1.21.1
 
 ---
 
 **Made with ❤️ for the Minecraft community**
 
-*Ready to fight some epic dragons? Download now and unleash chaos!*
+*Every dragon fight is now unique and epic!*

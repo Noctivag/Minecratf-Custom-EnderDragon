@@ -84,9 +84,18 @@ public class AbilityManager {
     private void executeLightningAbilities(CustomDragon customDragon, PlayerEntity target) {
         EnderDragonEntity dragon = customDragon.getDragon();
         
+        spawnLightningStrike(dragon, customDragon, target);
+    }
+
+    private void spawnLightningStrike(EnderDragonEntity dragon, CustomDragon customDragon, PlayerEntity target) {
         if (!customDragon.isAbilityOnCooldown("lightning-strike") && dragon.getWorld() instanceof ServerWorld serverWorld) {
-            // Strike lightning
-            EntityType.LIGHTNING_BOLT.spawn(serverWorld, target.getBlockPos(), SpawnReason.TRIGGERED);
+            // Strike lightning at target position
+            net.minecraft.util.math.BlockPos targetPos = new net.minecraft.util.math.BlockPos(
+                (int)target.getX(), 
+                (int)target.getY(), 
+                (int)target.getZ()
+            );
+            EntityType.LIGHTNING_BOLT.spawn(serverWorld, targetPos, SpawnReason.TRIGGERED);
             customDragon.setAbilityCooldown("lightning-strike");
         }
     }
@@ -113,7 +122,9 @@ public class AbilityManager {
 
     // Helper methods
     private void spawnFireball(EnderDragonEntity dragon, PlayerEntity target) {
-        Vec3d direction = target.getPos().subtract(dragon.getPos()).normalize();
+        Vec3d dragonPos = new Vec3d(dragon.getX(), dragon.getY(), dragon.getZ());
+        Vec3d targetPos = new Vec3d(target.getX(), target.getY(), target.getZ());
+        Vec3d direction = new Vec3d(target.getX() - dragon.getX(), target.getY() - dragon.getY(), target.getZ() - dragon.getZ()).normalize();
         DragonFireballEntity fireball = new DragonFireballEntity(dragon.getWorld(), dragon, direction);
         fireball.setPosition(dragon.getX(), dragon.getY() + 2, dragon.getZ());
         dragon.getWorld().spawnEntity(fireball);

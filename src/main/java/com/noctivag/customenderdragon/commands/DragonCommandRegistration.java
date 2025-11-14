@@ -62,7 +62,12 @@ public class DragonCommandRegistration {
         }
 
         ServerWorld world = player.getServerWorld();
-        CustomEnderDragonMod.getDragonManager().spawnDragon(world, player.getBlockPos(), variant);
+        net.minecraft.util.math.BlockPos spawnPos = new net.minecraft.util.math.BlockPos(
+            (int)player.getX(), 
+            (int)player.getY(), 
+            (int)player.getZ()
+        );
+        CustomEnderDragonMod.getDragonManager().spawnDragon(world, spawnPos, variant);
 
         source.sendFeedback(() -> Text.literal("Spawned " + variant.getDisplayName() + " Dragon!")
             .formatted(Formatting.GREEN), true);
