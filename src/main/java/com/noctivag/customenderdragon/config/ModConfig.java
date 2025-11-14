@@ -100,55 +100,99 @@ public class ModConfig {
     }
 
     public static void load() {
-        File configDir = new File("config");
-        if (!configDir.exists()) {
-            configDir.mkdirs();
-        }
+        try {
+            File configDir = new File("config");
+            if (!configDir.exists()) {
+                configDir.mkdirs();
+            }
 
-        File configFile = new File(configDir, "customenderdragon.json");
+            File configFile = new File(configDir, "customenderdragon.json");
 
-        if (configFile.exists()) {
-            try (FileReader reader = new FileReader(configFile)) {
-                config = GSON.fromJson(reader, Config.class);
-                CustomEnderDragonMod.LOGGER.info("Configuration loaded successfully");
-            } catch (Exception e) {
-                CustomEnderDragonMod.LOGGER.error("Failed to load config, using defaults", e);
+            if (configFile.exists()) {
+                try (FileReader reader = new FileReader(configFile)) {
+                    Config loadedConfig = GSON.fromJson(reader, Config.class);
+                    // Validate loaded config
+                    if (loadedConfig != null && loadedConfig.variants != null) {
+                        config = loadedConfig;
+                        CustomEnderDragonMod.LOGGER.info("Configuration loaded successfully");
+                    } else {
+                        CustomEnderDragonMod.LOGGER.warn("Loaded config was invalid, using defaults");
+                        config = new Config();
+                        save();
+                    }
+                } catch (Exception e) {
+                    CustomEnderDragonMod.LOGGER.error("Failed to load config, using defaults", e);
+                    config = new Config();
+                    save();
+                }
+            } else {
                 config = new Config();
                 save();
             }
-        } else {
+        } catch (Exception e) {
+            CustomEnderDragonMod.LOGGER.error("Critical error during config load, using defaults", e);
             config = new Config();
-            save();
+        }
+
+        // Final safety check - config must never be null
+        if (config == null) {
+            CustomEnderDragonMod.LOGGER.error("Config was null after load, creating emergency default");
+            config = new Config();
         }
     }
 
     public static void save() {
-        File configDir = new File("config");
-        if (!configDir.exists()) {
-            configDir.mkdirs();
+        if (config == null) {
+            CustomEnderDragonMod.LOGGER.error("Cannot save null config");
+            return;
         }
 
-        File configFile = new File(configDir, "customenderdragon.json");
+        try {
+            File configDir = new File("config");
+            if (!configDir.exists()) {
+                configDir.mkdirs();
+            }
 
-        try (FileWriter writer = new FileWriter(configFile)) {
-            GSON.toJson(config, writer);
-            CustomEnderDragonMod.LOGGER.info("Configuration saved successfully");
+            File configFile = new File(configDir, "customenderdragon.json");
+
+            try (FileWriter writer = new FileWriter(configFile)) {
+                GSON.toJson(config, writer);
+                CustomEnderDragonMod.LOGGER.info("Configuration saved successfully");
+            } catch (Exception e) {
+                CustomEnderDragonMod.LOGGER.error("Failed to save config", e);
+            }
         } catch (Exception e) {
-            CustomEnderDragonMod.LOGGER.error("Failed to save config", e);
+            CustomEnderDragonMod.LOGGER.error("Critical error during config save", e);
         }
     }
 
-    // Getters
+    // Getters with null safety
     public static VariantConfig getVariantConfig(DragonVariant variant) {
-        return config.variants.get(variant.name());
+        if (config == null || config.variants == null) {
+            CustomEnderDragonMod.LOGGER.error("Config not initialized, cannot get variant config");
+            return null;
+        }
+        VariantConfig variantConfig = config.variants.get(variant.name());
+        if (variantConfig == null) {
+            CustomEnderDragonMod.LOGGER.warn("No config found for variant {}, using fallback", variant.name());
+            return new VariantConfig(variant);
+        }
+        return variantConfig;
     }
 
     public static AbilityConfig getAbilityConfig(DragonVariant variant, String abilityName) {
         VariantConfig variantConfig = getVariantConfig(variant);
-        return variantConfig != null ? variantConfig.abilities.get(abilityName) : null;
+        if (variantConfig == null || variantConfig.abilities == null) {
+            return null;
+        }
+        return variantConfig.abilities.get(abilityName);
     }
 
     public static Config getConfig() {
+        if (config == null) {
+            CustomEnderDragonMod.LOGGER.warn("Config requested but was null, returning default");
+            config = new Config();
+        }
         return config;
     }
 }

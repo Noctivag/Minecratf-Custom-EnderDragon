@@ -35,6 +35,9 @@ dependencies {
 
 	// Config library
 	modImplementation "me.shedaniel.cloth:cloth-config-fabric:15.0.140"
+
+	// Gson for JSON configuration
+	implementation "com.google.code.gson:gson:2.10.1"
 }
 
 processResources {
