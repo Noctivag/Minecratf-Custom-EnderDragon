@@ -5,6 +5,7 @@ import com.noctivag.customenderdragon.dragon.DragonVariant;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 
@@ -21,8 +22,8 @@ public class ParticleManager {
         ParticleEffect particle = getVariantParticle(variant);
         Vec3d pos = dragon.getPos().add(0, 2, 0);
 
-        serverWorld.spawnParticles(particle, pos.x, pos.y, pos.z, 5, 0.5, 0.5, 0.5, 0.0);
-        
+        spawnParticlesForPlayers(serverWorld, particle, pos.x, pos.y, pos.z, 5, 0.5, 0.5, 0.5, 0.0);
+
         // Wing trail effects
         spawnWingTrail(serverWorld, dragon, particle);
     }
@@ -39,8 +40,8 @@ public class ParticleManager {
         Vec3d leftWing = pos.add(right);
         Vec3d rightWing = pos.subtract(right);
 
-        world.spawnParticles(particle, leftWing.x, leftWing.y, leftWing.z, 2, 0.1, 0.1, 0.1, 0.0);
-        world.spawnParticles(particle, rightWing.x, rightWing.y, rightWing.z, 2, 0.1, 0.1, 0.1, 0.0);
+        spawnParticlesForPlayers(world, particle, leftWing.x, leftWing.y, leftWing.z, 2, 0.1, 0.1, 0.1, 0.0);
+        spawnParticlesForPlayers(world, particle, rightWing.x, rightWing.y, rightWing.z, 2, 0.1, 0.1, 0.1, 0.0);
     }
 
     public void spawnPhaseChangeEffect(EnderDragonEntity dragon, DragonVariant variant, DragonPhase phase) {
@@ -62,8 +63,21 @@ public class ParticleManager {
                 double z = pos.z + radius * Math.sin(angle);
                 double y = pos.y + 1;
 
-                serverWorld.spawnParticles(particle, x, y, z, 1, 0, 0, 0, 0.0);
+                spawnParticlesForPlayers(serverWorld, particle, x, y, z, 1, 0, 0, 0, 0.0);
             }
+        }
+    }
+
+    /**
+     * Spawns particles for all nearby players on the server.
+     * This is the correct approach for Minecraft 1.21.10+ server-side particle spawning.
+     */
+    private void spawnParticlesForPlayers(ServerWorld world, ParticleEffect particle,
+                                         double x, double y, double z,
+                                         int count, double deltaX, double deltaY, double deltaZ,
+                                         double speed) {
+        for (ServerPlayerEntity player : world.getPlayers()) {
+            world.spawnParticles(player, particle, false, x, y, z, count, deltaX, deltaY, deltaZ, speed);
         }
     }
 
