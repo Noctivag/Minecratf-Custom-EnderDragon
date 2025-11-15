@@ -26,7 +26,7 @@ public class DragonManager {
         
         world.spawnEntity(dragon);
 
-        CustomDragon customDragon = new CustomDragon(dragon, variant);
+        CustomDragon customDragon = new CustomDragon(dragon, world, variant);
         activeDragons.put(dragon.getUuid(), customDragon);
 
         CustomEnderDragonMod.LOGGER.info("Spawned {} dragon at {}", variant.name(), pos);

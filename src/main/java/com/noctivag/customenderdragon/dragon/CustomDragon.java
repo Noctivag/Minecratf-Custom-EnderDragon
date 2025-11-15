@@ -7,9 +7,9 @@ import com.noctivag.customenderdragon.visuals.DisplayEntityManager;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +21,7 @@ import java.util.UUID;
 public class CustomDragon {
     private final EnderDragonEntity dragon;
     private final DragonVariant variant;
+    private final ServerWorld world;
     private DragonPhase currentPhase;
     private final Map<String, Long> abilityCooldowns;
     private double maxHealth;
@@ -31,8 +32,9 @@ public class CustomDragon {
     private DisplayEntityManager.DragonDecorations decorations;
     private CrystalStructureManager.CrystalArena arena;
 
-    public CustomDragon(EnderDragonEntity dragon, DragonVariant variant) {
+    public CustomDragon(EnderDragonEntity dragon, ServerWorld world, DragonVariant variant) {
         this.dragon = dragon;
+        this.world = world;
         this.variant = variant;
         this.currentPhase = DragonPhase.PHASE_1;
         this.abilityCooldowns = new HashMap<>();
@@ -56,7 +58,7 @@ public class CustomDragon {
                 (int)dragon.getZ()
             );
             // Pass null for world since this is just a stub implementation
-            arena = CustomEnderDragonMod.getCrystalStructureManager().createCrystalArena(dragonPos, variant, null);
+            arena = CustomEnderDragonMod.getCrystalStructureManager().createCrystalArena(dragonPos, variant, world);
         } catch (Exception e) {
             CustomEnderDragonMod.LOGGER.error("Failed to setup 3D visuals for dragon", e);
         }
@@ -108,7 +110,7 @@ public class CustomDragon {
             particleTickCounter++;
             if (particleTickCounter >= 5) {
                 if (CustomEnderDragonMod.getParticleManager() != null) {
-                    CustomEnderDragonMod.getParticleManager().spawnParticles(dragon, variant);
+                    CustomEnderDragonMod.getParticleManager().spawnParticles(world, dragon, variant);
                 }
                 particleTickCounter = 0;
             }
@@ -144,11 +146,10 @@ public class CustomDragon {
     private void onPhaseChange() {
         try {
             if (CustomEnderDragonMod.getParticleManager() != null) {
-                CustomEnderDragonMod.getParticleManager().spawnPhaseChangeEffect(dragon, variant, currentPhase);
+                CustomEnderDragonMod.getParticleManager().spawnPhaseChangeEffect(world, dragon, variant, currentPhase);
             }
-            
+
             // Broadcast phase change
-            World world = dragon.getWorld();
             if (!world.isClient) {
                 Text message = Text.literal("The " + variant.getDisplayName() + " Dragon has entered Phase " + 
                     currentPhase.getPhaseNumber() + "!").formatted(Formatting.GOLD, Formatting.BOLD);
@@ -209,5 +210,9 @@ public class CustomDragon {
 
     public UUID getUUID() {
         return dragon.getUuid();
+    }
+
+    public ServerWorld getWorld() {
+        return world;
     }
 }

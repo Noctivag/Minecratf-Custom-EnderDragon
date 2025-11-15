@@ -27,47 +27,48 @@ public class AbilityManager {
     public void executeAbilities(CustomDragon customDragon) {
         DragonVariant variant = customDragon.getVariant();
         EnderDragonEntity dragon = customDragon.getDragon();
+        ServerWorld world = customDragon.getWorld();
 
-        if (dragon.getWorld().isClient) {
+        if (world == null || world.isClient) {
             return;
         }
 
         // Find nearest player
-        PlayerEntity target = dragon.getWorld().getClosestPlayer(dragon, 30.0);
+        PlayerEntity target = world.getClosestPlayer(dragon, 30.0);
         if (target == null) {
             return;
         }
 
         switch (variant) {
-            case FIRE -> executeFireAbilities(customDragon, target);
-            case ICE -> executeIceAbilities(customDragon, target);
-            case LIGHTNING -> executeLightningAbilities(customDragon, target);
-            case SHADOW -> executeShadowAbilities(customDragon, target);
-            case VOID -> executeVoidAbilities(customDragon, target);
+            case FIRE -> executeFireAbilities(customDragon, world, target);
+            case ICE -> executeIceAbilities(customDragon, world, target);
+            case LIGHTNING -> executeLightningAbilities(customDragon, world, target);
+            case SHADOW -> executeShadowAbilities(customDragon, world, target);
+            case VOID -> executeVoidAbilities(customDragon, world, target);
         }
     }
 
-    private void executeFireAbilities(CustomDragon customDragon, PlayerEntity target) {
+    private void executeFireAbilities(CustomDragon customDragon, ServerWorld world, PlayerEntity target) {
         EnderDragonEntity dragon = customDragon.getDragon();
         int phase = customDragon.getCurrentPhase().getPhaseNumber();
 
         // Fireball attack
         if (!customDragon.isAbilityOnCooldown("fireball")) {
-            spawnFireball(dragon, target);
+            spawnFireball(world, dragon, target);
             customDragon.setAbilityCooldown("fireball");
         }
 
         // Fire aura
-        applyFireAura(dragon);
+        applyFireAura(world, dragon);
 
         // Meteor shower (Phase 3 only)
         if (phase >= 3 && !customDragon.isAbilityOnCooldown("meteor-shower")) {
-            spawnMeteorShower(dragon);
+            spawnMeteorShower(world, dragon);
             customDragon.setAbilityCooldown("meteor-shower");
         }
     }
 
-    private void executeIceAbilities(CustomDragon customDragon, PlayerEntity target) {
+    private void executeIceAbilities(CustomDragon customDragon, ServerWorld world, PlayerEntity target) {
         EnderDragonEntity dragon = customDragon.getDragon();
 
         // Ice shard damage + slowness
@@ -78,29 +79,29 @@ public class AbilityManager {
         }
 
         // Freeze aura
-        applyFreezeAura(dragon);
+        applyFreezeAura(world, dragon);
     }
 
-    private void executeLightningAbilities(CustomDragon customDragon, PlayerEntity target) {
+    private void executeLightningAbilities(CustomDragon customDragon, ServerWorld world, PlayerEntity target) {
         EnderDragonEntity dragon = customDragon.getDragon();
-        
-        spawnLightningStrike(dragon, customDragon, target);
+
+        spawnLightningStrike(world, customDragon, target);
     }
 
-    private void spawnLightningStrike(EnderDragonEntity dragon, CustomDragon customDragon, PlayerEntity target) {
-        if (!customDragon.isAbilityOnCooldown("lightning-strike") && dragon.getWorld() instanceof ServerWorld serverWorld) {
+    private void spawnLightningStrike(ServerWorld world, CustomDragon customDragon, PlayerEntity target) {
+        if (!customDragon.isAbilityOnCooldown("lightning-strike")) {
             // Strike lightning at target position
             net.minecraft.util.math.BlockPos targetPos = new net.minecraft.util.math.BlockPos(
                 (int)target.getX(), 
                 (int)target.getY(), 
                 (int)target.getZ()
             );
-            EntityType.LIGHTNING_BOLT.spawn(serverWorld, targetPos, SpawnReason.TRIGGERED);
+            EntityType.LIGHTNING_BOLT.spawn(world, targetPos, SpawnReason.TRIGGERED);
             customDragon.setAbilityCooldown("lightning-strike");
         }
     }
 
-    private void executeShadowAbilities(CustomDragon customDragon, PlayerEntity target) {
+    private void executeShadowAbilities(CustomDragon customDragon, ServerWorld world, PlayerEntity target) {
         EnderDragonEntity dragon = customDragon.getDragon();
 
         if (!customDragon.isAbilityOnCooldown("shadow-strike")) {
@@ -110,7 +111,7 @@ public class AbilityManager {
         }
     }
 
-    private void executeVoidAbilities(CustomDragon customDragon, PlayerEntity target) {
+    private void executeVoidAbilities(CustomDragon customDragon, ServerWorld world, PlayerEntity target) {
         EnderDragonEntity dragon = customDragon.getDragon();
 
         if (!customDragon.isAbilityOnCooldown("void-pulse")) {
@@ -121,18 +122,18 @@ public class AbilityManager {
     }
 
     // Helper methods
-    private void spawnFireball(EnderDragonEntity dragon, PlayerEntity target) {
+    private void spawnFireball(ServerWorld world, EnderDragonEntity dragon, PlayerEntity target) {
         Vec3d dragonPos = new Vec3d(dragon.getX(), dragon.getY(), dragon.getZ());
         Vec3d targetPos = new Vec3d(target.getX(), target.getY(), target.getZ());
         Vec3d direction = new Vec3d(target.getX() - dragon.getX(), target.getY() - dragon.getY(), target.getZ() - dragon.getZ()).normalize();
-        DragonFireballEntity fireball = new DragonFireballEntity(dragon.getWorld(), dragon, direction);
+        DragonFireballEntity fireball = new DragonFireballEntity(world, dragon, direction);
         fireball.setPosition(dragon.getX(), dragon.getY() + 2, dragon.getZ());
-        dragon.getWorld().spawnEntity(fireball);
+        world.spawnEntity(fireball);
     }
 
-    private void applyFireAura(EnderDragonEntity dragon) {
+    private void applyFireAura(ServerWorld world, EnderDragonEntity dragon) {
         Box box = dragon.getBoundingBox().expand(10.0);
-        List<Entity> nearbyEntities = dragon.getWorld().getOtherEntities(dragon, box, 
+        List<Entity> nearbyEntities = world.getOtherEntities(dragon, box, 
             entity -> entity instanceof LivingEntity);
                 
         for (Entity entity : nearbyEntities) {
@@ -142,9 +143,9 @@ public class AbilityManager {
         }
     }
 
-    private void applyFreezeAura(EnderDragonEntity dragon) {
+    private void applyFreezeAura(ServerWorld world, EnderDragonEntity dragon) {
         Box box = dragon.getBoundingBox().expand(10.0);
-        List<Entity> nearbyEntities = dragon.getWorld().getOtherEntities(dragon, box,
+        List<Entity> nearbyEntities = world.getOtherEntities(dragon, box,
             entity -> entity instanceof LivingEntity);
 
         for (Entity entity : nearbyEntities) {
@@ -154,16 +155,12 @@ public class AbilityManager {
         }
     }
 
-    private void spawnMeteorShower(EnderDragonEntity dragon) {
-        if (!(dragon.getWorld() instanceof ServerWorld serverWorld)) {
-            return;
-        }
-
+    private void spawnMeteorShower(ServerWorld world, EnderDragonEntity dragon) {
         for (int i = 0; i < 15; i++) {
             int offsetX = random.nextInt(40) - 20;
             int offsetZ = random.nextInt(40) - 20;
             
-            serverWorld.createExplosion(null, 
+            world.createExplosion(null, 
                 dragon.getX() + offsetX, 
                 dragon.getY() + 20, 
                 dragon.getZ() + offsetZ, 

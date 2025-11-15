@@ -85,7 +85,7 @@ public class DragonEventHandler {
 
         try {
             // Register as custom dragon
-            CustomDragon customDragon = new CustomDragon(dragon, variant);
+            CustomDragon customDragon = new CustomDragon(dragon, world, variant);
             CustomEnderDragonMod.getDragonManager().registerExistingDragon(dragon, customDragon);
 
             // Broadcast spawn message
@@ -153,7 +153,8 @@ public class DragonEventHandler {
         }
 
         // Broadcast death message
-        if (dragon.getWorld() instanceof ServerWorld serverWorld) {
+        ServerWorld serverWorld = customDragon.getWorld();
+        if (serverWorld != null) {
             Text message = Text.literal(customDragon.getVariant().getDisplayName() + 
                 " Dragon has been slain!").formatted(Formatting.YELLOW, Formatting.BOLD);
 

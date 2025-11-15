@@ -3,8 +3,10 @@ package com.noctivag.customenderdragon.utils;
 import com.noctivag.customenderdragon.dragon.DragonPhase;
 import com.noctivag.customenderdragon.dragon.DragonVariant;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
+import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 
@@ -13,18 +15,14 @@ import net.minecraft.util.math.Vec3d;
  */
 public class ParticleManager {
 
-    public void spawnParticles(EnderDragonEntity dragon, DragonVariant variant) {
-        if (!(dragon.getEntityWorld() instanceof ServerWorld serverWorld)) {
-            return;
-        }
-        
+    public void spawnParticles(ServerWorld world, EnderDragonEntity dragon, DragonVariant variant) {
         ParticleEffect particle = getVariantParticle(variant);
         Vec3d pos = new Vec3d(dragon.getX(), dragon.getY() + 2, dragon.getZ());
 
-        serverWorld.spawnParticles(particle, pos.x, pos.y, pos.z, 5, 0.5, 0.5, 0.5, 0.0);
-        
+        sendParticles(world, particle, pos, 0.5, 0.5, 0.5, 0.0, 5);
+
         // Wing trail effects
-        spawnWingTrail(serverWorld, dragon, particle);
+        spawnWingTrail(world, dragon, particle);
     }
 
     private void spawnWingTrail(ServerWorld world, EnderDragonEntity dragon, ParticleEffect particle) {
@@ -39,15 +37,11 @@ public class ParticleManager {
         Vec3d leftWing = pos.add(right);
         Vec3d rightWing = pos.subtract(right);
 
-        world.spawnParticles(particle, leftWing.x, leftWing.y, leftWing.z, 2, 0.1, 0.1, 0.1, 0.0);
-        world.spawnParticles(particle, rightWing.x, rightWing.y, rightWing.z, 2, 0.1, 0.1, 0.1, 0.0);
+        sendParticles(world, particle, leftWing, 0.1, 0.1, 0.1, 0.0, 2);
+        sendParticles(world, particle, rightWing, 0.1, 0.1, 0.1, 0.0, 2);
     }
 
-    public void spawnPhaseChangeEffect(EnderDragonEntity dragon, DragonVariant variant, DragonPhase phase) {
-        if (!(dragon.getEntityWorld() instanceof ServerWorld serverWorld)) {
-            return;
-        }
-        
+    public void spawnPhaseChangeEffect(ServerWorld world, EnderDragonEntity dragon, DragonVariant variant, DragonPhase phase) {
         ParticleEffect particle = getVariantParticle(variant);
         Vec3d pos = new Vec3d(dragon.getX(), dragon.getY(), dragon.getZ());
 
@@ -62,8 +56,29 @@ public class ParticleManager {
                 double z = pos.z + radius * Math.sin(angle);
                 double y = pos.y + 1;
 
-                serverWorld.spawnParticles(particle, x, y, z, 1, 0, 0, 0, 0.0);
+                sendParticles(world, particle, new Vec3d(x, y, z), 0, 0, 0, 0.0, 1);
             }
+        }
+    }
+
+    private void sendParticles(ServerWorld world, ParticleEffect particle, Vec3d pos,
+                               double spreadX, double spreadY, double spreadZ,
+                               double speed, int count) {
+        final double maxDistance = 256 * 256; // squared distance check
+        for (ServerPlayerEntity player : world.getPlayers(serverPlayer -> serverPlayer.getPos().squaredDistanceTo(pos) <= maxDistance)) {
+            ParticleS2CPacket packet = new ParticleS2CPacket(
+                particle,
+                true,
+                pos.x,
+                pos.y,
+                pos.z,
+                (float) spreadX,
+                (float) spreadY,
+                (float) spreadZ,
+                (float) speed,
+                count
+            );
+            player.networkHandler.sendPacket(packet);
         }
     }
 
